@@ -1,0 +1,24 @@
+.board {
+    position: relative;
+    background-color: floralwhite;
+    height: 25rem;
+    width: 25rem;
+    margin: 5rem;
+}
+
+.block {
+    position: absolute;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+    &.empty {
+        background-image: url("/block-white.svg");
+    }
+    &.filled {
+        background-image: url("/block-filled.svg")
+    }
+}
+
+.selector {
+    display: flex;
+}
