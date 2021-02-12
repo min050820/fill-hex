@@ -20,7 +20,8 @@ export class GameBoardInfo {
     boardSize: number  //< Count of blocks in one edge
     blocks: Array<BlockInfo | null>
 
-    constructor(otherRef: GameBoardInfo | undefined) {
+    // https://github.com/microsoft/TypeScript/issues/12400 : 'undefined' arguments are not optional
+    constructor(otherRef?: GameBoardInfo) {
         if(otherRef) {
             // copy constructor
             this.boardSize = otherRef.boardSize
@@ -134,15 +135,16 @@ export class GameBoardInfo {
     checkBingo(): GameBoardInfo {
         const ret = new GameBoardInfo(this)
 
+        type TraverseType = [number, number]
         // bingo: ---
-        const traverseTypeA = [1, 1]
+        const traverseTypeA: TraverseType = [1, 1]
         // bingo: ///
-        const traverseTypeB = [1, 0]
+        const traverseTypeB: TraverseType = [1, 0]
         // bingo: \\\
-        const traverseTypeC = [0, 1]
+        const traverseTypeC: TraverseType = [0, 1]
         const traverseTypes = [traverseTypeA, traverseTypeB, traverseTypeC]
 
-        const reduceLine = <T extends unknown>(offset: [number, number], w: number, z: number, cb: (prev: T | null, w: number, z: number) => T): T | null => {
+        const reduceLine = <T extends unknown>(offset: TraverseType, w: number, z: number, cb: (prev: T | null, w: number, z: number) => T): T | null => {
             const [offsetW, offsetZ] = offset
             let value = null
             while(ret.testPosition(w, z)) {
@@ -153,7 +155,7 @@ export class GameBoardInfo {
             return value
         }
 
-        const hits: Array<{traverse: [number, number], w: number, z: number}> = []
+        const hits: Array<{traverse: TraverseType, w: number, z: number}> = []
 
         for(let i = 0; i < traverseTypes.length; i++) {
             const [offsetW, offsetZ] = traverseTypes[i]

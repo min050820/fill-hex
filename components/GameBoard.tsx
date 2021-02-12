@@ -25,7 +25,7 @@ function makeBlock(screenWidth: number, screenHeight: number, block: BlockInfo |
 
 const GameBoard: FC<GameBoardProps> = ({boardSize}) => {
     const [gameBoardInfo, setGameBoardInfo] = useState(() => new GameBoardInfo().init(boardSize))
-    const {ref: boardRef, width, height} = useDimensions()
+    const {ref: boardRef, width, height} = useDimensions<HTMLDivElement>()
     const refW = useRef<HTMLInputElement>()
     const refZ = useRef<HTMLInputElement>()
 
