@@ -20,14 +20,14 @@ export class GameBoardInfo {
     boardSize: number  //< Count of blocks in one edge
     blocks: Array<BlockInfo | null>
 
-    constructor(otherRef: GameBoaordInfo | undefined) {
+    constructor(otherRef: GameBoardInfo | undefined) {
         if(otherRef) {
             // copy constructor
             this.boardSize = otherRef.boardSize
             this.blocks = otherRef.blocks
         } else {
             this.boardSize = 0
-            this.blocks = {}
+            this.blocks = []
         }
     }
 
