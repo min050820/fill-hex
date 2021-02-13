@@ -43,7 +43,7 @@ const PieceBoard: FC<PieceBoardProps> = ({ piece }) => {
     return (
         <>
             <div ref={boardRef} className={styles.board}>
-                {gameBoardInfo.blocks.map((a) => makeBlock_div(width, height, a))}
+                {gameBoardInfo.blocks.map((a) => makeBlock_svg(width, height, a))}
             </div>
         </>
     )

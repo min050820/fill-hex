@@ -28,7 +28,7 @@ const BlockFC: FC<BlockProps> = (prop) => {
                     }} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 259.8076211353316 300' version='1.1' xmlnsXlink='http://www.w3.org/1999/xlink'>
                     <path fill={prop.color ?? '#fff'} 
                     d='M112.58330249197702 9.999999999999998Q129.9038105676658 0 147.22431864335456 9.999999999999998L242.48711305964284 65Q259.8076211353316 75 259.8076211353316 95L259.8076211353316 205Q259.8076211353316 225 242.48711305964284 235L147.22431864335456 290Q129.9038105676658 300 112.58330249197702 290L17.320508075688775 235Q0 225 0 205L0 95Q0 75 17.320508075688775 65Z'
-                    stroke="#000000" stroke-width="5px"
+                    stroke="#000000" strokeWidth="5px"
                     id='ld' clipPath='url(#clip)'
                     ></path>
                     <clipPath id='clip'><use xlinkHref='#ld'/></clipPath>
