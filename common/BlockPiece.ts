@@ -46,12 +46,13 @@ function convertBinaryToBoolean(binaryString: string): Array<boolean> {
 }
 
 // Pieces for Board Size N -> Only use 4 block piece (hard to decide each piece's shape) + 1 block piece
-function getPieces(blocks: number): Array<BlockPiece> {
+export function getPieces(blocks: number): Array<BlockPiece> {
     const pieces: Array<BlockPiece> = []
 
     if(blocks === 1) {
         pieces.push(new BlockPiece(1, [true]))
     } else if(blocks === 4) {
+        // Generated using https://scratch.mit.edu/projects/188516027/
         // TYPE: long 4
         pieces.push(new BlockPiece(3, convertBinaryToBoolean('01000 00100 00010 00001 00000')))
         pieces.push(new BlockPiece(3, convertBinaryToBoolean('01000 01000 01000 01000 00000')))
@@ -81,7 +82,7 @@ function getPieces(blocks: number): Array<BlockPiece> {
         pieces.push(new BlockPiece(2, convertBinaryToBoolean('000 111 001')))
         pieces.push(new BlockPiece(2, convertBinaryToBoolean('000 111 010')))
     } else {
-        throw `${blocks}-block pieces are not supported`
+        throw `BlockPiece: ${blocks}-block pieces are not supported`
     }
 
     return pieces
