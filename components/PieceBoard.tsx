@@ -9,12 +9,26 @@ export interface PieceBoardProps {
     piece: BlockPiece
 }
 
-function makeBlock(screenWidth: number, screenHeight: number, block: BlockInfo | null): ReactElement {
+function makeBlock_svg(screenWidth: number, screenHeight: number, block: BlockInfo | null): ReactElement {
     if(!block)
         return null
 
     return (
-        <Block key={`${block.w}:${block.z}`} width={block.blockWidth * screenWidth} height={block.blockHeight * screenHeight} top={block.y * screenHeight} left={block.x * screenWidth} color={block.isEmpty ? '#FFFFFF' : '#13AE67'}/>
+        <Block key={`${block.w}:${block.z}`} useSVG
+        width={block.blockWidth * screenWidth} height={block.blockHeight * screenHeight}
+        top={block.y * screenHeight} left={block.x * screenWidth}
+        color={block.isEmpty ? '#FFFFFF' : '#13AE67'}/>
+    )
+}
+function makeBlock_div(screenWidth: number, screenHeight: number, block: BlockInfo | null): ReactElement {
+    if(!block)
+        return null
+
+    return (
+        <Block key={`${block.w}:${block.z}`}
+        width={block.blockWidth * screenWidth} height={block.blockHeight * screenHeight}
+        top={block.y * screenHeight} left={block.x * screenWidth}
+        fileSuffix={block.isEmpty ? 'white' : 'filled'}/>
     )
 }
 
@@ -29,7 +43,7 @@ const PieceBoard: FC<PieceBoardProps> = ({ piece }) => {
     return (
         <>
             <div ref={boardRef} className={styles.board}>
-                {gameBoardInfo.blocks.map((a) => makeBlock(width, height, a))}
+                {gameBoardInfo.blocks.map((a) => makeBlock_div(width, height, a))}
             </div>
         </>
     )
