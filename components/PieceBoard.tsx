@@ -1,33 +1,40 @@
-import React, {FC, ReactElement, useEffect, useRef, useState} from 'react'
+import React, {FC, ReactElement, useEffect, useState} from 'react'
 import { BlockInfo, GameBoardInfo } from '../common/GameBoardInfo'
 import styles from '../styles/GameBoard.module.scss'
 import useDimensions from 'react-cool-dimensions'
 import { BlockPiece } from '../common/BlockPiece'
+import Block from './Block'
 
 export interface PieceBoardProps {
     piece: BlockPiece
 }
 
-function makeBlock(screenWidth: number, screenHeight: number, block: BlockInfo | null): ReactElement {
+function makeBlock_svg(screenWidth: number, screenHeight: number, block: BlockInfo | null): ReactElement {
     if(!block)
         return null
 
     return (
-        <div key={`${block.z}:${block.w}`}
-            className={`${styles.block} ${block.isEmpty ? styles.empty : styles.filled}`}
-            style={{
-                height: `${block.blockHeight * screenHeight}px`,
-                width: `${block.blockWidth * screenWidth}px`,
-                top: `${block.y * screenHeight}px`,
-                left: `${block.x * screenWidth}px`}}/>
+        <Block key={`${block.w}:${block.z}`} useSVG
+        width={block.blockWidth * screenWidth} height={block.blockHeight * screenHeight}
+        top={block.y * screenHeight} left={block.x * screenWidth}
+        color={block.isEmpty ? '#FFFFFF' : '#13AE67'}/>
+    )
+}
+function makeBlock_div(screenWidth: number, screenHeight: number, block: BlockInfo | null): ReactElement {
+    if(!block)
+        return null
+
+    return (
+        <Block key={`${block.w}:${block.z}`}
+        width={block.blockWidth * screenWidth} height={block.blockHeight * screenHeight}
+        top={block.y * screenHeight} left={block.x * screenWidth}
+        fileSuffix={block.isEmpty ? 'white' : 'filled'}/>
     )
 }
 
 const PieceBoard: FC<PieceBoardProps> = ({ piece }) => {
     const [gameBoardInfo, setGameBoardInfo] = useState(() => new GameBoardInfo().init(piece.pieceSize))
     const {ref: boardRef, width, height} = useDimensions<HTMLDivElement>()
-    const refW = useRef<HTMLInputElement>()
-    const refZ = useRef<HTMLInputElement>()
 
     useEffect(() => {
         setGameBoardInfo(() => new GameBoardInfo().init(piece.pieceSize).placePiece(piece, 0, 0))
@@ -36,7 +43,7 @@ const PieceBoard: FC<PieceBoardProps> = ({ piece }) => {
     return (
         <>
             <div ref={boardRef} className={styles.board}>
-                {gameBoardInfo.blocks.map((a) => makeBlock(width, height, a))}
+                {gameBoardInfo.blocks.map((a) => makeBlock_svg(width, height, a))}
             </div>
         </>
     )
