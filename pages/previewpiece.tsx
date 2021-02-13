@@ -2,6 +2,7 @@ import React from 'react'
 import {NextPage} from 'next'
 import PieceBoard from '../components/PieceBoard'
 import { getPieces } from '../common/BlockPiece'
+import Head from 'next/head'
 
 interface PieceType {
     blocks: number
@@ -30,6 +31,9 @@ const PreviewPiecePage: NextPage = () => {
 
 	return (
 		<>
+            <Head>
+                <title>Piece preview</title>
+            </Head>
 			<PieceBoard piece={previewPiece}/>
             <div>
                 Blocks: <input type="number" value={pieceIdx.blocks} onChange={(e) => {changePiece({...pieceIdx, blocks: Number.parseInt(e.target.value)})}}/>
