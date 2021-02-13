@@ -27,7 +27,7 @@ export function getTestPiece2(): BlockPiece {
 
 // Convert '01000' -> [false, true, false, false, false]
 function convertBinaryToBoolean(binaryString: string): Array<boolean> {
-    const result: Array<boolean> = [];
+    const result: Array<boolean> = []
 
     for(let i = 0; i < binaryString.length; i++) {
         switch(binaryString[i]) {

@@ -4,7 +4,7 @@ import PieceBoard from '../components/PieceBoard'
 import { getPieces } from '../common/BlockPiece'
 
 interface PieceType {
-    blocks: number,
+    blocks: number
     index: number
 }
 

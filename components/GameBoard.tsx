@@ -3,6 +3,7 @@ import { BlockInfo, GameBoardInfo } from '../common/GameBoardInfo'
 import styles from '../styles/GameBoard.module.scss'
 import useDimensions from 'react-cool-dimensions'
 import { getTestPiece1 } from '../common/BlockPiece'
+import Block from './Block'
 
 export interface GameBoardProps {
     boardSize: number
@@ -13,13 +14,7 @@ function makeBlock(screenWidth: number, screenHeight: number, block: BlockInfo |
         return null
 
     return (
-        <div key={`${block.z}:${block.w}`}
-            className={`${styles.block} ${block.isEmpty ? styles.empty : styles.filled}`}
-            style={{
-                height: `${block.blockHeight * screenHeight}px`,
-                width: `${block.blockWidth * screenWidth}px`,
-                top: `${block.y * screenHeight}px`,
-                left: `${block.x * screenWidth}px`}}/>
+        <Block key={`${block.w}:${block.z}`} width={block.blockWidth * screenWidth} height={block.blockHeight * screenHeight} top={block.y * screenHeight} left={block.x * screenWidth} color={block.isEmpty ? '#FFFFFF' : '#13AE67'}/>
     )
 }
 
