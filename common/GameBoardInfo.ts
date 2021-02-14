@@ -20,7 +20,6 @@ export class GameBoardInfo {
     boardSize: number  //< Count of blocks in one edge
     blocks: Array<BlockInfo | null>
 
-    // https://github.com/microsoft/TypeScript/issues/12400 : 'undefined' arguments are not optional
     constructor(otherRef?: GameBoardInfo) {
         if(otherRef) {
             // copy constructor
