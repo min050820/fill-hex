@@ -143,9 +143,9 @@ export class GameBoardInfo {
         const traverseTypeC: TraverseType = [0, 1]
         const traverseTypes = [traverseTypeA, traverseTypeB, traverseTypeC]
 
-        const reduceLine = <T extends unknown>(offset: TraverseType, w: number, z: number, cb: (prev: T | null, w: number, z: number) => T): T | null => {
+        const reduceLine = <T extends unknown>(offset: TraverseType, w: number, z: number, initial: T, cb: (prev: T, w: number, z: number) => T): T => {
             const [offsetW, offsetZ] = offset
-            let value = null
+            let value = initial
             while(ret.testPosition(w, z)) {
                 value = cb(value, w, z)
                 w += offsetW
@@ -165,10 +165,10 @@ export class GameBoardInfo {
                     if(ret.testPosition(w - offsetW, z - offsetZ))
                         continue
                     // check bingo
-                    const hasBingo = reduceLine(traverseTypes[i], w, z, (prev: boolean, w, z) => {
+                    const hasBingo = reduceLine(traverseTypes[i], w, z, true, (prev, w, z) => {
                         if(ret.getBlock(w, z).isEmpty)
                             return false
-                        return (prev !== null ? prev : true)
+                        return prev
                     })
                     if(hasBingo) {
                         hits.push({traverse: traverseTypes[i], w, z})
@@ -178,8 +178,9 @@ export class GameBoardInfo {
         }
 
         for(let i = 0; i < hits.length; i++) {
-            reduceLine(hits[i].traverse, hits[i].w, hits[i].z, (prev: null, w, z) => {
+            reduceLine(hits[i].traverse, hits[i].w, hits[i].z, null, (prev, w, z) => {
                 ret.getBlock(w, z).isEmpty = true
+                return null
             })
         }
 
