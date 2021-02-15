@@ -1,4 +1,4 @@
-import { BlockPiece, getTestPiece1 } from './BlockPiece'
+import { BlockPiece } from './BlockPiece'
 
 export interface BlockInfo {
     isEmpty: boolean
@@ -74,9 +74,12 @@ export class GameBoardInfo {
         return this.boardSize * 2 - 1
     }
 
-    // not non-null if used with testPosition(w, z)
+    // not null if used with testPosition(w, z)
     getBlock(w: number, z: number): BlockInfo {
-        return this.blocks[z * this.getAxisBound() + w]!
+        const blk = this.blocks[z * this.getAxisBound() + w]
+        if(blk)
+            return blk
+        throw 'Accessing invalid block!'
     }
 
     // test if (w, z) is not padding area
@@ -143,7 +146,8 @@ export class GameBoardInfo {
         const traverseTypeC: TraverseType = [0, 1]
         const traverseTypes = [traverseTypeA, traverseTypeB, traverseTypeC]
 
-        const reduceLine = <T extends unknown>(offset: TraverseType, w: number, z: number, initial: T, cb: (prev: T, w: number, z: number) => T): T => {
+        const reduceLine = <T extends unknown>(offset: TraverseType, w: number, z: number,
+                            initial: T, cb: (prev: T, w: number, z: number) => T): T => {
             const [offsetW, offsetZ] = offset
             let value = initial
             while(ret.testPosition(w, z)) {

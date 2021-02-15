@@ -1,8 +1,7 @@
-import React, {FC, ReactElement, useEffect, useRef, useState} from 'react'
-import { BlockInfo, GameBoardInfo } from '../common/GameBoardInfo'
+import React, {FC, useState} from 'react'
+import { GameBoardInfo } from '../common/GameBoardInfo'
 import styles from '../styles/GameBoard.module.scss'
 import useDimensions from 'react-cool-dimensions'
-import { getTestPiece1 } from '../common/BlockPiece'
 import Block from './Block'
 
 type Coord = [number, number]
@@ -17,7 +16,7 @@ function clipByValue(value: number, min: number, max: number) {
 
 const GameBoard: FC<GameBoardProps> = ({boardSize}) => {
     const [gameBoardInfo, setGameBoardInfo] = useState(() => new GameBoardInfo().init(boardSize))
-    const [chosenTile, setChosenTile] = useState<Coord>(null)
+    const [chosenTile, setChosenTile] = useState<Coord | null>(null)
     const {ref: boardRef, width, height} = useDimensions<HTMLDivElement>()
 
     const onMouseMove = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -46,7 +45,8 @@ const GameBoard: FC<GameBoardProps> = ({boardSize}) => {
             }
         }
 
-        setChosenTile(() => [gameBoardInfo.blocks[minIndex].w, gameBoardInfo.blocks[minIndex].z])
+        const result = gameBoardInfo.blocks[minIndex] ?? {w: 0, z: 0}
+        setChosenTile(() => [result.w, result.z])
     }
 
     const onMouseLeave = () => {
@@ -73,7 +73,8 @@ const GameBoard: FC<GameBoardProps> = ({boardSize}) => {
             <div ref={boardRef} className={styles.board} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave} onClick={onClick}>
                 {gameBoardInfo.blocks.map((a) => a && <Block key={`${a.w}:${a.z}`}
                     width={width * a.blockWidth} height={height * a.blockHeight}
-                    left={width * a.x} top={height * a.y} ghost={chosenTile && (chosenTile[0] === a.w && chosenTile[1] === a.z)}
+                    left={width * a.x} top={height * a.y}
+                    ghost={!!(chosenTile && (chosenTile[0] === a.w && chosenTile[1] === a.z))}
                     block={a}/>)}
             </div>
         </>

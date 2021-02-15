@@ -2,7 +2,7 @@
 // Copied from https://github.com/bryc/code/blob/master/jshash/PRNGs.md
 
 // Useful for seeding prng
-function splitmix32(a) {
+function splitmix32(a: number) {
     return () => {
         a |= 0
         a = a + 0x9e3779b9 | 0
