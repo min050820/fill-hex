@@ -11,7 +11,6 @@ export interface BlockProps {
     ghost: boolean
 }
 
-//FIXME: Currently <svg> version has a subpixel error which was not found in <div> version
 const Block: FC<BlockProps> = ({width, height, top, left, block, ghost}) => {
     return (
         <div className={`${styles.block} ${block.isEmpty ? (ghost ? styles.ghost : styles.white) : styles.filled}`}
