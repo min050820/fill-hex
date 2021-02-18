@@ -57,7 +57,7 @@ class Random {
     // If no argument is given, returns without any bound
     // Else if max === undefined, returns [0..min-1] inclusive
     // Else, returns [min..max] inclusive
-    nextInt(min: number, max: number): number {
+    nextInt(min?: number, max?: number): number {
         if(min === undefined && max === undefined) {
             return this.next() | 0
         } else {
