@@ -1,83 +1,41 @@
 import React, {FC, useState} from 'react'
+import { BlockPiece } from '../common/BlockPiece'
 import { GameBoardInfo } from '../common/GameBoardInfo'
 import styles from '../styles/GameBoard.module.scss'
-import useDimensions from 'react-cool-dimensions'
-import Block from './Block'
+import BlockBoard from './BlockBoard'
 
-type Coord = [number, number]
 
 export interface GameBoardProps {
     boardSize: number
 }
 
-function clipByValue(value: number, min: number, max: number) {
-    return Math.max(Math.min(value, max), min)
-}
 
 const GameBoard: FC<GameBoardProps> = ({boardSize}) => {
     const [gameBoardInfo, setGameBoardInfo] = useState(() => new GameBoardInfo().init(boardSize))
-    const [chosenTile, setChosenTile] = useState<Coord | null>(null)
-    const {ref: boardRef, width, height} = useDimensions<HTMLDivElement>()
+    const [displayGhost, setDisplayGhost] = useState(false)
 
-    const onMouseMove = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        if(!boardRef.current || ev.target === boardRef.current) {
-            setChosenTile(() => null)
-            return false
-        }
-            
-        const boardDiv = boardRef.current
-        const rect = boardDiv.getBoundingClientRect()
-        const x = clipByValue((ev.clientX - rect.left) / rect.width, 0, 1)
-        const y = clipByValue((ev.clientY - rect.top) / rect.height, 0, 1)
+    const currPiece = new BlockPiece(1, [true])
 
-        let minIndex = -1
-        let minDist = 1
-        for(let i = 0; i < gameBoardInfo.blocks.length; i++) {
-            const block = gameBoardInfo.blocks[i]
-            if(!block)
-                continue
-            const blockX = block.x + block.blockWidth / 2
-            const blockY = block.y + block.blockHeight / 2
-            const dist = (x - blockX) * (x - blockX) + (y - blockY) * (y - blockY)
-            if(dist < minDist) {
-                minIndex = i
-                minDist = dist
-            }
-        }
-
-        const result = gameBoardInfo.blocks[minIndex] ?? {w: 0, z: 0}
-        setChosenTile(() => [result.w, result.z])
-    }
-
-    const onMouseLeave = () => {
-        setChosenTile(() => null)
-        return false
-    }
-
-    const onClick = () => {
-        if(!chosenTile)
-            return false
-        const w = chosenTile[0]
-        const z = chosenTile[1]
+    const onClick = (w: number, z: number) => {
         setGameBoardInfo((board) => {
-            // FIXME: mutating board! attention required!!
-            board.getBlock(w, z).isEmpty = false
+            if(!board.testPiece(currPiece, w, z))
+                return board
+            board = board.placePiece(currPiece, w, z)
             board = board.checkBingo()
             return board
         })
-        return true
     }
 
+    // FIXME: Ghost piece should be centered
     return (
-        <>
-            <div ref={boardRef} className={styles.board} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave} onClick={onClick}>
-                {gameBoardInfo.blocks.map((a) => a && <Block key={`${a.w}:${a.z}`}
-                    width={width * a.blockWidth} height={height * a.blockHeight}
-                    left={width * a.x} top={height * a.y}
-                    ghost={!!(chosenTile && (chosenTile[0] === a.w && chosenTile[1] === a.z))}
-                    block={a}/>)}
-            </div>
-        </>
+        <BlockBoard
+            className={styles.board}
+            blocks={gameBoardInfo.blocks}
+            inputEnabled
+            onHover={(w, z) => setDisplayGhost(gameBoardInfo.testPiece(currPiece, w, z))}
+            onHoverEnd={() => setDisplayGhost(false)}
+            onClick={onClick}
+            ghost={displayGhost ? currPiece : undefined}/>
     )
 }
 

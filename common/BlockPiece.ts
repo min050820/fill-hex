@@ -13,16 +13,10 @@ export class BlockPiece {
 
     // returns true if a block is there
     pick(w: number, z: number): boolean {
+        if(w < 0 || z < 0 || this.getAxisBound() <= w || this.getAxisBound() <= z)
+            return false
         return this.blockData[w + z * this.getAxisBound()]
     }
-}
-
-export function getTestPiece1(): BlockPiece {
-    return new BlockPiece(1, [true])
-}
-
-export function getTestPiece2(): BlockPiece {
-    return new BlockPiece(2, [false, true, false, false, false, true, false, true, true])
 }
 
 // Convert '01000' -> [false, true, false, false, false]
@@ -46,6 +40,8 @@ function convertBinaryToBoolean(binaryString: string): Array<boolean> {
 }
 
 // Pieces for Board Size N -> Only use 4 block piece (hard to decide each piece's shape) + 1 block piece
+// FIXME: Current shapes doesn't make a good game. Need to change them.
+//        ...and what on the earth 'blocks' is supposed to mean?
 export function getPieces(blocks: number): Array<BlockPiece> {
     const pieces: Array<BlockPiece> = []
 
@@ -53,10 +49,8 @@ export function getPieces(blocks: number): Array<BlockPiece> {
         pieces.push(new BlockPiece(1, [true]))
     } else if(blocks === 4) {
         // Generated using https://scratch.mit.edu/projects/188516027/
-        // TYPE: long 4
-        pieces.push(new BlockPiece(3, convertBinaryToBoolean('01000 00100 00010 00001 00000')))
-        pieces.push(new BlockPiece(3, convertBinaryToBoolean('01000 01000 01000 01000 00000')))
-        pieces.push(new BlockPiece(3, convertBinaryToBoolean('00000 11110 00000 00000 00000')))
+        // TYPE: o
+        pieces.push(new BlockPiece(1, [true]))
         // TYPE: U
         pieces.push(new BlockPiece(2, convertBinaryToBoolean('110 001 001')))
         pieces.push(new BlockPiece(2, convertBinaryToBoolean('010 001 011')))
@@ -81,6 +75,10 @@ export function getPieces(blocks: number): Array<BlockPiece> {
         pieces.push(new BlockPiece(2, convertBinaryToBoolean('100 111 000')))
         pieces.push(new BlockPiece(2, convertBinaryToBoolean('000 111 001')))
         pieces.push(new BlockPiece(2, convertBinaryToBoolean('000 111 010')))
+        // TYPE: long 4
+        pieces.push(new BlockPiece(3, convertBinaryToBoolean('01000 00100 00010 00001 00000')))
+        pieces.push(new BlockPiece(3, convertBinaryToBoolean('01000 01000 01000 01000 00000')))
+        pieces.push(new BlockPiece(3, convertBinaryToBoolean('00000 11110 00000 00000 00000')))
     } else {
         throw `BlockPiece: ${blocks}-block pieces are not supported`
     }
