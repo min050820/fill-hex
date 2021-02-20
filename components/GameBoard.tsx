@@ -3,7 +3,7 @@ import { BlockPiece } from '../common/BlockPiece'
 import { GameBoardInfo } from '../common/GameBoardInfo'
 import styles from '../styles/GameBoard.module.scss'
 import BlockBoard from './BlockBoard'
-
+import PieceBagBoard from './PieceBagBoard'
 
 export interface GameBoardProps {
     boardSize: number
@@ -28,14 +28,17 @@ const GameBoard: FC<GameBoardProps> = ({boardSize}) => {
 
     // FIXME: Ghost piece should be centered
     return (
-        <BlockBoard
-            className={styles.board}
-            blocks={gameBoardInfo.blocks}
-            inputEnabled
-            onHover={(w, z) => setDisplayGhost(gameBoardInfo.testPiece(currPiece, w, z))}
-            onHoverEnd={() => setDisplayGhost(false)}
-            onClick={onClick}
-            ghost={displayGhost ? currPiece : undefined}/>
+        <>
+            <BlockBoard
+                className={styles.board}
+                blocks={gameBoardInfo.blocks}
+                inputEnabled
+                onHover={(w, z) => setDisplayGhost(gameBoardInfo.testPiece(currPiece, w, z))}
+                onHoverEnd={() => setDisplayGhost(false)}
+                onClick={onClick}
+                ghost={displayGhost ? currPiece : undefined} />
+            <PieceBagBoard />
+        </>
     )
 }
 
