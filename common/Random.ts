@@ -54,11 +54,11 @@ class Random {
     }
 
     // Returns signed int32 within bound
-    // If no argument is given, returns without any bound
+    // If min === undefined, returns without any bound
     // Else if max === undefined, returns [0..min-1] inclusive
     // Else, returns [min..max] inclusive
     nextInt(min?: number, max?: number): number {
-        if(min === undefined && max === undefined) {
+        if(min === undefined) {
             return this.next() | 0
         } else {
             if(max === undefined) {
