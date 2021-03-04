@@ -1,4 +1,4 @@
-import { BlockPiece } from './BlockPiece'
+import { PieceData } from './PieceData'
 
 export interface BlockInfo {
     isEmpty: boolean
@@ -6,8 +6,6 @@ export interface BlockInfo {
     // rendering info (0..1)
     x: number
     y: number
-    blockWidth: number
-    blockHeight: number
 
     // block axis ↗ (counting from 0)
     w: number
@@ -19,15 +17,21 @@ export interface BlockInfo {
 export class GameBoardInfo {
     boardSize: number  //< Count of blocks in one edge
     blocks: Array<BlockInfo | null>
+    blockWidth: number
+    blockHeight: number
 
     constructor(otherRef?: GameBoardInfo) {
         if(otherRef) {
             // copy constructor
             this.boardSize = otherRef.boardSize
             this.blocks = otherRef.blocks
+            this.blockWidth = otherRef.blockWidth
+            this.blockHeight = otherRef.blockHeight
         } else {
             this.boardSize = 0
             this.blocks = []
+            this.blockWidth = 0
+            this.blockHeight = 0
         }
     }
 
@@ -35,13 +39,13 @@ export class GameBoardInfo {
         boardSize |= 0
         this.boardSize = boardSize
         this.blocks = []
-        const blockWidth = 1 / (boardSize * 2 - 1)
-        const blockHeight = blockWidth * 2 / Math.sqrt(3)
-        const blockOffsetX = blockWidth / 2
-        const blockOffsetY = blockWidth * Math.sqrt(3) / 2
+        this.blockWidth = 1 / (boardSize * 2 - 1)
+        this.blockHeight = this.blockWidth * 2 / Math.sqrt(3)
+        const blockOffsetX = this.blockWidth / 2
+        const blockOffsetY = this.blockWidth * Math.sqrt(3) / 2
 
         let x = 0
-        let y = 0.5 - blockHeight / 2
+        let y = 0.5 - this.blockHeight / 2
 
         for(let z = 0; z < this.getAxisBound(); z++) {
             let offsetX = 0
@@ -52,8 +56,6 @@ export class GameBoardInfo {
                         isEmpty: true,
                         x: x + offsetX,
                         y: y + offsetY,
-                        blockWidth: blockWidth,
-                        blockHeight: blockHeight,
                         w, z
                     })
                 } else {
@@ -92,7 +94,7 @@ export class GameBoardInfo {
     }
 
     // test if a piece can fit into (tw, tz)
-    testPiece(piece: BlockPiece, tw: number, tz: number): boolean {
+    testPiece(piece: PieceData, tw: number, tz: number): boolean {
         const bound = piece.getAxisBound()
 
         for(let cz = 0; cz < bound; cz++) {
@@ -113,7 +115,7 @@ export class GameBoardInfo {
     }
 
     // place piece
-    placePiece(piece: BlockPiece, tw: number, tz: number): GameBoardInfo {
+    placePiece(piece: PieceData, tw: number, tz: number): GameBoardInfo {
         const ret = new GameBoardInfo(this)
         
         if(!ret.testPiece(piece, tw, tz)) {

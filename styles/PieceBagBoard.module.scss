@@ -1,0 +1,13 @@
+.filler {
+    display: grid;
+    height: 100%;
+    width: 100%;
+
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.piece {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

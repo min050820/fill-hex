@@ -1,19 +1,22 @@
 import React, {FC, useEffect, useState} from 'react'
-import {BlockInfo} from '../common/GameBoardInfo'
+import {GameBoardInfo} from '../common/GameBoardInfo'
 import Block from './Block'
 import useDimensions from 'react-cool-dimensions'
-import { BlockPiece } from '../common/BlockPiece'
+import { PieceData } from '../common/PieceData'
+import { IRenderContext } from './GameBoard'
 
 
 export interface BlockBoardProps {
-    inputEnabled: boolean
+    inputEnabled?: boolean
     onClick?: (w: number, z: number) => void
     onHover?: (w: number, z: number) => void
     onHoverEnd?: () => void
+    
+    updateRenderInfo?: (renderInfo: Partial<IRenderContext>) => void
 
     className: string
-    blocks: Array<BlockInfo | null>
-    ghost?: BlockPiece
+    boardInfo: GameBoardInfo
+    ghost?: PieceData
 }
 
 
@@ -27,7 +30,8 @@ function clipByValue(value: number, min: number, max: number) {
 const BlockBoard: FC<BlockBoardProps> = (props) => {
     const {inputEnabled} = props
     const {onClick, onHover, onHoverEnd} = props
-    const {className, blocks, ghost} = props
+    const {className, boardInfo, ghost} = props
+    const {updateRenderInfo} = props
 
     const [hoverCoord, setHoverCoord] = useState<Coord | null>(null)
     const {ref, width, height} = useDimensions<HTMLDivElement>()
@@ -38,6 +42,10 @@ const BlockBoard: FC<BlockBoardProps> = (props) => {
         else if(onHoverEnd)
             onHoverEnd()
     }, [hoverCoord])
+
+    useEffect(() => {
+        updateRenderInfo && updateRenderInfo({ blockWidth: width * boardInfo.blockWidth, blockHeight: height * boardInfo.blockHeight })
+    }, [width, height])
 
     const onPointerMove = (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if(!ref.current || ev.target === ref.current) {
@@ -52,12 +60,12 @@ const BlockBoard: FC<BlockBoardProps> = (props) => {
 
         let minIndex = -1
         let minDist = 1
-        for(let i = 0; i < blocks.length; i++) {
-            const block = blocks[i]
+        for(let i = 0; i < boardInfo.blocks.length; i++) {
+            const block = boardInfo.blocks[i]
             if(!block)
                 continue
-            const blockX = block.x + block.blockWidth / 2
-            const blockY = block.y + block.blockHeight / 2
+            const blockX = block.x + boardInfo.blockWidth / 2
+            const blockY = block.y + boardInfo.blockHeight / 2
             const dist = (x - blockX) * (x - blockX) + (y - blockY) * (y - blockY)
             if(dist < minDist) {
                 minIndex = i
@@ -65,7 +73,7 @@ const BlockBoard: FC<BlockBoardProps> = (props) => {
             }
         }
 
-        const result = blocks[minIndex] ?? {w: 0, z: 0}
+        const result = boardInfo.blocks[minIndex] ?? {w: 0, z: 0}
         setHoverCoord((prev) => {
             if(!prev || prev.w !== result.w || prev.z !== result.z)
                 return {w: result.w, z: result.z}
@@ -84,8 +92,8 @@ const BlockBoard: FC<BlockBoardProps> = (props) => {
             onPointerMove={inputEnabled ? onPointerMove : undefined}
             onPointerLeave={inputEnabled ? onPointerLeave : undefined}>
             
-            {blocks.map((a) => a && <Block key={`${a.w}:${a.z}`}
-                    height={height * a.blockHeight} width={width * a.blockWidth}
+            {boardInfo.blocks.map((a) => a && <Block key={`${a.w}:${a.z}`}
+                    height={height * boardInfo.blockHeight} width={width * boardInfo.blockWidth}
                     top={height * a.y} left={width * a.x}
                     ghost={(hoverCoord && ghost?.pick(a.w - hoverCoord.w, a.z - hoverCoord.z)) ?? false}
                     block={a}/>)}
